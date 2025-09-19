@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <title>Open Place & Prefill Review (demo)</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 18px; max-width: 720px; margin: auto; }
+    #fallback { display: none; margin-top: 12px; }
+    textarea { width: 100%; height: 120px; font-size: 16px; padding: 8px; box-sizing: border-box; }
+    .btn { display:inline-block; margin-top:8px; padding:10px 14px; background:#1976d2; color:#fff; border-radius:6px; text-decoration:none; cursor:pointer; }
+    .muted { color:#666; font-size:14px; margin-top:8px; display:block; }
+  </style>
+</head>
+<body>
+  <h3>Preparing your review (demo)</h3>
+
+  <p id="status" class="muted">Preparing suggestion and opening Google Maps...</p>
+
+  <label for="suggest">Suggested review (you can edit before posting):</label>
+  <textarea id="suggest" readonly></textarea>
+
+  <div id="fallback">
+    <p class="muted">If your browser prevented automatic copying, press the button below to copy the text manually, then open Maps and paste into the review box.</p>
+    <button id="copyBtn" class="btn">Copy review to clipboard</button>
+    <a id="openMapsBtn" class="btn" style="background:#4caf50; margin-left:8px;" target="_blank">Open in Google Maps</a>
+  </div>
+
+  <script>
+    (function () {
+      // CONFIG
+      const placeId = "ChIJ93XhQ8JnUjoRBTf_fajEJKs"; // replace if needed
+      const suggestions = [
+        "Excellent staff and very professional. (demo)",
+        "Quick and efficient service — recommended! (demo)",
+        "Great experience, experienced doctors. (demo)",
+        "Very helpful staff and clear explanations. (demo)",
+        "Clean facility and timely service. (demo)"
+      ];
+      const openDelayMs = 900; // delay before opening Maps
+
+      // UI refs
+      const statusEl = document.getElementById('status');
+      const suggestEl = document.getElementById('suggest');
+      const fallbackEl = document.getElementById('fallback');
+      const copyBtn = document.getElementById('copyBtn');
+      const openMapsBtn = document.getElementById('openMapsBtn');
+
+      // pick suggestion
+      const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+      suggestEl.value = suggestion;
+      openMapsBtn.href = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
+
+      // try auto copy
+      async function tryAutoCopy(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (err) {
+          try {
+            const tmp = document.createElement('textarea');
+            tmp.value = text;
+            tmp.style.position = 'fixed';
+            tmp.style.left = '-9999px';
+            document.body.appendChild(tmp);
+            tmp.select();
+            const ok = document.execCommand('copy');
+            document.body.removeChild(tmp);
+            return !!ok;
+          } catch (e) {
+            return false;
+          }
+        }
+      }
+
+      (async function prepareAndOpen() {
+        statusEl.textContent = "Attempting to copy suggestion to clipboard...";
+        const ok = await tryAutoCopy(suggestion);
+
+        if (ok) {
+          statusEl.textContent = "Suggestion copied. Opening Google Maps...";
+          setTimeout(() => {
+            window.location.href = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
+          }, openDelayMs);
+        } else {
+          statusEl.textContent = "Automatic copy blocked. Use the buttons below.";
+          fallbackEl.style.display = 'block';
+        }
+      })();
+
+      // fallback manual copy
+      copyBtn.addEventListener('click', async function () {
+        const ok = await tryAutoCopy(suggestion);
+        if (ok) {
+          alert('Copied! Now open Maps and paste into the review form.');
+        } else {
+          alert('Copy failed — select the text manually.');
+          suggestEl.removeAttribute('readonly');
+          suggestEl.focus();
+          suggestEl.select();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
+
