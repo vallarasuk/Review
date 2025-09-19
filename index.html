@@ -1,107 +1,290 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta charset="utf-8" />
-  <title>Open Place & Prefill Review (demo)</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 18px; max-width: 720px; margin: auto; }
-    #fallback { display: none; margin-top: 12px; }
-    textarea { width: 100%; height: 120px; font-size: 16px; padding: 8px; box-sizing: border-box; }
-    .btn { display:inline-block; margin-top:8px; padding:10px 14px; background:#1976d2; color:#fff; border-radius:6px; text-decoration:none; cursor:pointer; }
-    .muted { color:#666; font-size:14px; margin-top:8px; display:block; }
-  </style>
-</head>
-<body>
-  <h3>Preparing your review (demo)</h3>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Open Place & Prefill Review (demo)</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 18px;
+        max-width: 720px;
+        margin: auto;
+      }
+      #fallback {
+        display: none;
+        margin-top: 12px;
+      }
+      textarea {
+        width: 100%;
+        height: 120px;
+        font-size: 16px;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+      .btn {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 10px 14px;
+        background: #1976d2;
+        color: #fff;
+        border-radius: 6px;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .muted {
+        color: #666;
+        font-size: 14px;
+        margin-top: 8px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Preparing your review (demo)</h3>
 
-  <p id="status" class="muted">Preparing suggestion and opening Google Maps...</p>
+    <p id="status" class="muted">
+      Preparing suggestion and opening Google Maps...
+    </p>
 
-  <label for="suggest">Suggested review (you can edit before posting):</label>
-  <textarea id="suggest" readonly></textarea>
+    <label for="suggest">Suggested review (you can edit before posting):</label>
+    <textarea id="suggest" readonly></textarea>
 
-  <div id="fallback">
-    <p class="muted">If your browser prevented automatic copying, press the button below to copy the text manually, then open Maps and paste into the review box.</p>
-    <button id="copyBtn" class="btn">Copy review to clipboard</button>
-    <a id="openMapsBtn" class="btn" style="background:#4caf50; margin-left:8px;" target="_blank">Open in Google Maps</a>
-  </div>
+    <div id="fallback">
+      <p class="muted">
+        If your browser prevented automatic copying, press the button below to
+        copy the text manually, then open Maps and paste into the review box.
+      </p>
+      <button id="copyBtn" class="btn">Copy review to clipboard</button>
+      <a
+        id="openMapsBtn"
+        class="btn"
+        style="background: #4caf50; margin-left: 8px"
+        target="_blank"
+        >Open in Google Maps</a
+      >
+    </div>
 
-  <script>
-    (function () {
-      // CONFIG
-      const placeId = "ChIJ93XhQ8JnUjoRBTf_fajEJKs"; // replace if needed
-      const suggestions = [
-        "Excellent staff and very professional. (demo)",
-        "Quick and efficient service — recommended! (demo)",
-        "Great experience, experienced doctors. (demo)",
-        "Very helpful staff and clear explanations. (demo)",
-        "Clean facility and timely service. (demo)"
+    <script>
+      (function () {
+        const placeId = "ChIJ93XhQ8JnUjoRBTf_fajEJKs"; // replace with your place ID
+        const baseReviews = [
+          "Excellent staff and professional service.",
+          "Very clean environment and organized process.",
+          "The doctors explained everything clearly and with a lot of patience.",
+          "I had a smooth and comfortable experience from start to finish.",
+          "Everyone was so friendly, and the guidance was super helpful.",
+          "Great doctors, very professional and genuinely caring.",
+          "Quick service! I was in and out with minimal waiting time.",
+          "Highly recommended for anyone looking for quality care.",
+          "The facility was spotless and really well maintained.",
+          "Support staff were polite and treated everyone with respect.",
+          "You can tell the doctors are knowledgeable and very experienced.",
+          "The whole team made me feel very comfortable and at ease.",
+          "Everything was handled so efficiently, I was very impressed.",
+          "Prompt service and a surprisingly smooth process.",
+          "The staff made sure I understood every step of what was happening.",
+          "Felt safe and well cared for throughout my entire visit.",
+          "Very courteous and attentive staff, they listen to your concerns.",
+          "Doctors gave detailed explanations, which I really appreciated.",
+          "A reliable and trustworthy place. I'll definitely be back if needed.",
+          "They seem to value patient satisfaction very highly here.",
+          "All the staff are approachable and incredibly supportive.",
+          "I appreciate their professionalism and the high standards they keep.",
+          "Excellent facilities and what looks like the latest equipment.",
+          "Seamless coordination between the departments and great follow-ups.",
+          "They made the whole process completely stress-free for me.",
+          "I am so impressed with their patient-first approach.",
+          "They provided clear instructions for everything, so I never felt lost.",
+          "Such a friendly approach from the entire team.",
+          "The doctors gave me a lot of personal attention, not rushed at all.",
+          "A very positive experience overall. Five stars!",
+          "Good coordination between the staff and the doctors.",
+          "The staff are polite and clearly well-trained.",
+          "Very efficient and reliable service. I felt I was in good hands.",
+          "Doctors patiently answered all of my questions, even the silly ones.",
+          "Great experience from the moment I walked in to the moment I left.",
+          "Very professional in every single aspect of the service.",
+          "The doctors and nurses were all very attentive to my needs.",
+          "Smooth registration and appointment process. It was so easy.",
+          "I felt at ease during my visit, which is rare for me!",
+          "Staff made sure I was comfortable the whole time.",
+          "Service was quick but also very well managed and thorough.",
+          "The doctors showed genuine care and compassion.",
+          "The facility is neat, tidy, and very hygienic.",
+          "I liked that they are very transparent in their procedures.",
+          "The whole team worked together in perfect sync.",
+          "Clear communication at all stages of the process.",
+          "Highly skilled doctors and nurses. You can trust their expertise.",
+          "The staff were welcoming and warm, which makes a big difference.",
+          "Doctors actually took the time to listen to my concerns.",
+          "The whole process was so easy and simple.",
+          "Staff were very attentive to all the small details.",
+          "I was well taken care of. Couldn't ask for more.",
+          "A pleasant experience, which I wasn't expecting!",
+          "Their professional and compassionate approach is commendable.",
+          "Service was timely and effective. I got the help I needed.",
+          "The doctors gave me a great sense of confidence.",
+          "The environment here is very calming and reassuring.",
+          "Appointments were managed well, no long waits.",
+          "Quick and smooth process. Very efficient system.",
+          "The doctors are very approachable and easy to talk to.",
+          "A place you can really trust with your health.",
+          "The staff is well trained and it really shows.",
+          "Such a caring atmosphere. It feels like they truly care.",
+          "Doctors are very supportive and encouraging.",
+          "They provide excellent guidance and are happy to help.",
+          "An efficient and reliable service all around.",
+          "Staff go above and beyond for their patients.",
+          "The doctors I saw were very thorough in their examination.",
+          "I am completely satisfied with the care I received.",
+          "They maintain high standards of service and cleanliness.",
+          "Doctors were very understanding of my situation.",
+          "The overall service was simply excellent.",
+          "The staff are very patient-friendly and accommodating.",
+          "The doctors treat you with kindness and respect.",
+          "A very systematic process, which I appreciate.",
+          "Doctors gave useful suggestions that I haven't heard before.",
+          "The staff were well coordinated and worked as a great team.",
+          "Excellent teamwork overall. It makes a big difference.",
+          "The doctors went out of their way to ensure my comfort.",
+          "Very polite staff members, from the front desk to the nurses.",
+          "Doctors gave accurate advice and a clear plan.",
+          "The experience was smoother than I could have imagined.",
+          "Helpful and kind staff make all the difference.",
+          "The doctors explained things in a way that was easy to understand.",
+          "Well-organized and highly professional. A top-tier place.",
+          "The staff guided me properly through every single step.",
+          "Doctors handled everything very carefully and with great skill.",
+          "Great staff support. They are the backbone of this place.",
+          "The doctors were highly skilled and confident.",
+          "The visit was very smooth, with no hiccups at all.",
+          "I felt the doctors took extra care with my case.",
+          "The staff were very cooperative with my scheduling needs.",
+          "This place is reliable. They do what they say they will.",
+          "The doctors gave me their full and undivided attention.",
+          "This service exceeded my expectations in every way.",
+          "The doctors were so compassionate and understanding.",
+          "Staff explained everything I needed to know, so I felt prepared.",
+          "Doctors answered patiently, no matter how many questions I had.",
+          "A truly wonderful experience. Can't thank them enough.",
+          "The doctors showed a lot of empathy and kindness.",
+          "The staff managed everything so well, it was impressive.",
+          "The doctors gave me the proper care I needed to get better.",
+          "Was really impressed with how modern and clean the whole facility is.",
+          "Didn't have to wait long at all, which was a huge plus for me.",
+          "They followed up with me after my appointment, which shows they really care.",
+          "Honestly, one of the best healthcare experiences I've had. Everything was seamless.",
+          "The doctor took the time to answer all my questions without making me feel rushed.",
+          "Can't recommend this place enough. Truly top-notch service.",
+          "The whole process, from booking the appointment to the actual visit, was super simple.",
+          "Five stars! The team here is fantastic.",
+          "Very professional atmosphere, but also very friendly and caring.",
+          "The instructions for my aftercare were explained very clearly.",
+          "A big thank you to the entire team for their hard work and dedication.",
+          "Felt like I was in very capable hands throughout my visit.",
+          "The organization and efficiency here are commendable.",
+          "If you're looking for quality care, this is the place to go.",
+          "The positive environment here really makes a difference.",
+          "The nurses were particularly kind and attentive.",
+          "My appointment started right on time. Punctuality is a big deal for me.",
+        ];
+
+        // Add ~20% reviews with "Good take care of Nikitha"
+const nikithaReviews = [
+        "Excellent service and very professional. I'd like to specifically mention Nikitha for her outstanding support.",
+        "Doctors and staff were very attentive. Nikitha, in particular, really went the extra mile to make sure my husband was okay.",
+        "The whole process was smooth and efficient, thanks in large part to Nikitha's excellent coordination.",
+        "Friendly staff and comfortable environment. A big thank you to Nikitha for being so welcoming and kind!",
+        "The doctors explained everything with patience, and Nikitha was also wonderful in answering all my follow-up questions.",
+        "Clean facilities and organized workflow. Nikitha was very helpful throughout the entire visit.",
+        "The staff were extremely supportive. I was feeling quite anxious, but Nikitha's calming presence made a huge difference.",
+        "Doctors gave clear instructions, and Nikitha made sure I understood everything before I left. Great attention to detail.",
+        "My mother and I are very satisfied with the care provided. Nikitha is a true asset to the team; she was fantastic with her.",
+        "Professional and trustworthy service. My experience was made even better by the courteous assistance from Nikitha.",
+        "The doctors handled everything with care, and I was especially impressed by Nikitha's compassionate and gentle approach.",
+        "Staff were polite and cooperative. Nikitha, in particular, was great to deal with and very efficient.",
+        "I felt safe and comfortable here, and I really have Nikitha to thank for that. She truly looked after me.",
+        "The doctors gave personal attention, and Nikitha also provided a very personal and caring touch to the service.",
+        "Appointments were well managed. Nikitha was incredibly helpful at the front desk and made scheduling a breeze.",
+        "The overall service was excellent. I must give a special mention to Nikitha for her superb patient care.",
+        "The doctors are very supportive. My wife was very well looked after by the whole team, especially by Nikitha.",
+        "A reliable and professional place. The help I received from Nikitha was absolutely top-notch.",
+        "The staff are very courteous. Nikitha has such a lovely, positive attitude that really brightens the place up!",
+        "The doctors gave accurate advice, and I'm grateful to Nikitha for helping me sort out the paperwork so easily."
       ];
-      const openDelayMs = 900; // delay before opening Maps
 
-      // UI refs
-      const statusEl = document.getElementById('status');
-      const suggestEl = document.getElementById('suggest');
-      const fallbackEl = document.getElementById('fallback');
-      const copyBtn = document.getElementById('copyBtn');
-      const openMapsBtn = document.getElementById('openMapsBtn');
+        // Merge both
+        const suggestions = [...baseReviews, ...nikithaReviews];
 
-      // pick suggestion
-      const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
-      suggestEl.value = suggestion;
-      openMapsBtn.href = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
+        const openDelayMs = 900;
+        const statusEl = document.getElementById("status");
+        const suggestEl = document.getElementById("suggest");
+        const fallbackEl = document.getElementById("fallback");
+        const copyBtn = document.getElementById("copyBtn");
+        const openMapsBtn = document.getElementById("openMapsBtn");
 
-      // try auto copy
-      async function tryAutoCopy(text) {
-        try {
-          await navigator.clipboard.writeText(text);
-          return true;
-        } catch (err) {
+        // pick random suggestion
+        const suggestion =
+          suggestions[Math.floor(Math.random() * suggestions.length)];
+        suggestEl.value = suggestion;
+        openMapsBtn.href = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(
+          placeId
+        )}`;
+
+        // try auto copy
+        async function tryAutoCopy(text) {
           try {
-            const tmp = document.createElement('textarea');
-            tmp.value = text;
-            tmp.style.position = 'fixed';
-            tmp.style.left = '-9999px';
-            document.body.appendChild(tmp);
-            tmp.select();
-            const ok = document.execCommand('copy');
-            document.body.removeChild(tmp);
-            return !!ok;
-          } catch (e) {
-            return false;
+            await navigator.clipboard.writeText(text);
+            return true;
+          } catch (err) {
+            try {
+              const tmp = document.createElement("textarea");
+              tmp.value = text;
+              tmp.style.position = "fixed";
+              tmp.style.left = "-9999px";
+              document.body.appendChild(tmp);
+              tmp.select();
+              const ok = document.execCommand("copy");
+              document.body.removeChild(tmp);
+              return !!ok;
+            } catch (e) {
+              return false;
+            }
           }
         }
-      }
 
-      (async function prepareAndOpen() {
-        statusEl.textContent = "Attempting to copy suggestion to clipboard...";
-        const ok = await tryAutoCopy(suggestion);
+        (async function prepareAndOpen() {
+          statusEl.textContent =
+            "Attempting to copy suggestion to clipboard...";
+          const ok = await tryAutoCopy(suggestion);
 
-        if (ok) {
-          statusEl.textContent = "Suggestion copied. Opening Google Maps...";
-          setTimeout(() => {
-            window.location.href = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
-          }, openDelayMs);
-        } else {
-          statusEl.textContent = "Automatic copy blocked. Use the buttons below.";
-          fallbackEl.style.display = 'block';
-        }
+          if (ok) {
+            statusEl.textContent = "Suggestion copied. Opening Google Maps...";
+            setTimeout(() => {
+              window.location.href = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(
+                placeId
+              )}`;
+            }, openDelayMs);
+          } else {
+            statusEl.textContent =
+              "Automatic copy blocked. Use the buttons below.";
+            fallbackEl.style.display = "block";
+          }
+        })();
+
+        copyBtn.addEventListener("click", async function () {
+          const ok = await tryAutoCopy(suggestion);
+          if (ok) {
+            alert("Copied! Now open Maps and paste into the review form.");
+          } else {
+            alert("Copy failed — select the text manually.");
+            suggestEl.removeAttribute("readonly");
+            suggestEl.focus();
+            suggestEl.select();
+          }
+        });
       })();
-
-      // fallback manual copy
-      copyBtn.addEventListener('click', async function () {
-        const ok = await tryAutoCopy(suggestion);
-        if (ok) {
-          alert('Copied! Now open Maps and paste into the review form.');
-        } else {
-          alert('Copy failed — select the text manually.');
-          suggestEl.removeAttribute('readonly');
-          suggestEl.focus();
-          suggestEl.select();
-        }
-      });
-    })();
-  </script>
-</body>
+    </script>
+  </body>
 </html>
-
